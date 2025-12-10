@@ -2,20 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>DeltaAIQ – AI Quotient Benchmark</title>
+  <title>DeltaAIQ – AI Company Benchmarking</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Chart.js via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta
+    name="description"
+    content="DeltaAIQ helps HR and business leaders quickly discover similar companies for benchmarking, talent strategy, and market intelligence using AI."
+  />
   <style>
     :root {
-      --bg: #0f1020;
-      --card: #181a2e;
-      --accent: #5b8def;
-      --accent-soft: rgba(91, 141, 239, 0.15);
-      --text: #f5f5f7;
-      --muted: #a3a7c2;
-      --danger: #ff6b6b;
-      --success: #3dd68c;
+      --bg: #050816;
+      --card-bg: #0f172a;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.14);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border-subtle: rgba(148, 163, 184, 0.35);
+      --radius-lg: 14px;
+      --radius-xl: 22px;
+      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.65);
+      --shadow-subtle: 0 10px 25px rgba(15, 23, 42, 0.5);
     }
 
     * {
@@ -24,555 +29,651 @@
 
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #202348, #050612);
-      color: var(--text);
       min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top, #1f2937 0, #020617 42%, #000 100%);
+      display: flex;
+      justify-content: center;
     }
 
     .page {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 32px 16px 48px;
+      width: 100%;
+      max-width: 1040px;
+      padding: 24px 16px 40px;
     }
 
-    header {
+    /* Header */
+
+    .header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
       gap: 16px;
-      margin-bottom: 32px;
     }
 
     .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #f97316, #a855f7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: #f9fafb;
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.7),
+        0 12px 28px rgba(15, 23, 42, 0.9);
+    }
+
+    .brand-text-main {
+      font-size: 18px;
       font-weight: 600;
-      letter-spacing: 0.06em;
-      font-size: 14px;
-      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .brand-text-sub {
+      font-size: 12px;
       color: var(--muted);
     }
 
-    .pill {
+    .header-pill {
+      padding: 4px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      font-size: 11px;
+      color: var(--muted);
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(91, 141, 239, 0.12);
-      color: var(--accent);
-      font-size: 12px;
+      gap: 6px;
+      background: linear-gradient(
+        135deg,
+        rgba(15, 23, 42, 0.85),
+        rgba(15, 23, 42, 0.5)
+      );
     }
+
+    .header-pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18);
+    }
+
+    /* Layout */
 
     .layout {
       display: grid;
-      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.2fr);
-      gap: 24px;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.2fr);
+      gap: 20px;
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 860px) {
       .layout {
         grid-template-columns: minmax(0, 1fr);
       }
     }
 
-    .card {
-      background: var(--card);
-      border-radius: 18px;
-      padding: 20px 18px;
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+    /* Hero / left column */
+
+    .hero-card {
+      background: radial-gradient(circle at top left, #0f172a, #020617 62%);
+      border-radius: 24px;
+      padding: 24px 22px 22px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
     }
 
-    h1 {
-      font-size: 26px;
-      margin: 0 0 6px;
+    .hero-badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+      font-size: 11px;
     }
 
-    .subtitle {
-      font-size: 14px;
+    .hero-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.85);
       color: var(--muted);
-      margin-bottom: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    form {
+    .hero-pill-highlight {
+      border-color: rgba(56, 189, 248, 0.9);
+      background: rgba(8, 47, 73, 0.85);
+      color: #e0f2fe;
+    }
+
+    .hero-pill-chip {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #38bdf8, #a855f7);
+    }
+
+    .hero-title {
+      font-size: clamp(26px, 3vw, 32px);
+      font-weight: 650;
+      letter-spacing: 0.02em;
+      margin-bottom: 10px;
+    }
+
+    .hero-highlight {
+      color: #bae6fd;
+    }
+
+    .hero-subtitle {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 36rem;
+      margin-bottom: 18px;
+    }
+
+    .hero-subtitle strong {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.8);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .btn-primary {
+      border: none;
+      border-radius: 999px;
+      padding: 9px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      background: linear-gradient(135deg, #38bdf8, #a855f7);
+      color: #0b1120;
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .btn-secondary {
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 13px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .hero-footnote {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .hero-footnote strong {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    /* Feature cards below hero */
+
+    .feature-row {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px 14px;
-      margin-top: 8px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
     }
 
-    @media (max-width: 600px) {
-      form {
+    @media (max-width: 680px) {
+      .feature-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      .feature-row {
         grid-template-columns: minmax(0, 1fr);
       }
     }
 
-    label {
-      display: block;
+    .feature-card {
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 10px 11px;
+      background: radial-gradient(
+        circle at top left,
+        rgba(56, 189, 248, 0.12),
+        rgba(15, 23, 42, 0.95)
+      );
       font-size: 12px;
       color: var(--muted);
+      min-height: 64px;
+    }
+
+    .feature-card-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #e5e7eb;
       margin-bottom: 4px;
     }
 
-    input, select {
+    /* Right column demo */
+
+    .demo-card {
+      background: linear-gradient(145deg, #020617, #020617 58%, #0b1120);
+      border-radius: 24px;
+      padding: 18px 18px 16px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .demo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .demo-title {
+      font-size: 15px;
+      font-weight: 550;
+    }
+
+    .demo-tag {
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(22, 163, 74, 0.12);
+      color: #bbf7d0;
+      border: 1px solid rgba(22, 163, 74, 0.5);
+    }
+
+    .demo-desc {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .demo-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .demo-label {
+      font-weight: 500;
+    }
+
+    .demo-hint {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .demo-input {
       width: 100%;
-      border-radius: 9px;
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      padding: 8px 9px;
-      background: rgba(6, 8, 24, 0.9);
+      margin-top: 6px;
+    }
+
+    .demo-input input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(15, 23, 42, 0.92);
       color: var(--text);
       font-size: 14px;
       outline: none;
     }
 
-    input:focus, select:focus {
+    .demo-input input[type="text"]:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(91, 141, 239, 0.5);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.6);
     }
 
-    .full {
-      grid-column: 1 / -1;
+    .demo-status {
+      margin-top: 8px;
+      font-size: 12px;
+      min-height: 16px;
+      color: var(--muted);
     }
 
-    button {
-      border-radius: 999px;
-      border: none;
-      padding: 9px 20px;
-      background: linear-gradient(135deg, #5b8def, #8e7bff);
-      color: white;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      display: inline-flex;
+    .demo-companies {
+      margin-top: 10px;
+      border-radius: 16px;
+      border: 1px solid var(--border-subtle);
+      background: radial-gradient(circle at top, #020617, #020617 60%, #020617);
+      padding: 8px 10px;
+      max-height: 210px;
+      overflow-y: auto;
+    }
+
+    .demo-company {
+      padding: 6px 3px;
+      border-radius: 10px;
+      font-size: 13px;
+      display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .demo-company + .demo-company {
+      border-top: 1px solid rgba(30, 41, 59, 0.9);
+    }
+
+    .demo-company-name {
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+
+    .demo-company-chip {
+      font-size: 11px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: #e0f2fe;
+      border: 1px solid rgba(56, 189, 248, 0.7);
+      white-space: nowrap;
+    }
+
+    .demo-empty {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 6px 2px 4px;
+    }
+
+    .demo-error {
+      font-size: 12px;
+      color: #fca5a5;
+      padding: 6px 2px 4px;
+    }
+
+    .demo-footer-note {
+      font-size: 11px;
+      color: var(--muted);
       margin-top: 4px;
     }
 
-    button:disabled {
-      opacity: 0.6;
-      cursor: default;
-    }
+    /* Footer */
 
-    .status {
-      margin-top: 6px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .status.error {
-      color: var(--danger);
-    }
-
-    .score-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 12px;
-    }
-
-    .score-main {
-      font-size: 40px;
-      font-weight: 700;
-    }
-
-    .score-label {
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .badge {
-      padding: 4px 9px;
-      border-radius: 999px;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    .badge.good {
-      border-color: var(--success);
-      color: var(--success);
-      background: rgba(61, 214, 140, 0.08);
-    }
-
-    .badge.medium {
-      border-color: #f1c40f;
-      color: #f1c40f;
-      background: rgba(241, 196, 15, 0.08);
-    }
-
-    .badge.low {
-      border-color: var(--danger);
-      color: var(--danger);
-      background: rgba(255, 107, 107, 0.08);
-    }
-
-    .bar-wrapper {
-      margin-top: 6px;
-      background: rgba(255, 255, 255, 0.06);
-      border-radius: 999px;
-      height: 8px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .bar-fill {
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 0%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, #5b8def, #8e7bff);
-      transition: width 0.6s ease-out;
-    }
-
-    .benchmarks {
-      display: flex;
-      justify-content: space-between;
+    .footer {
+      margin-top: 26px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(31, 41, 55, 0.9);
       font-size: 11px;
       color: var(--muted);
-      margin-top: 6px;
-    }
-
-    .pillars {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      display: flex;
+      justify-content: space-between;
       gap: 10px;
-      margin-top: 10px;
+      flex-wrap: wrap;
     }
 
-    @media (max-width: 600px) {
-      .pillars {
-        grid-template-columns: minmax(0, 1fr);
-      }
+    .footer a {
+      color: #a5b4fc;
+      text-decoration: none;
+      font-size: 11px;
     }
 
-    .pillar-item {
-      background: rgba(6, 8, 24, 0.8);
-      border-radius: 13px;
-      padding: 8px 9px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      font-size: 12px;
-    }
-
-    .pillar-head {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 4px;
-      font-weight: 500;
-    }
-
-    .pillar-score {
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    .section-title {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .list {
-      font-size: 13px;
-      color: var(--muted);
-      padding-left: 18px;
-      margin: 4px 0 10px;
-    }
-
-    .list li {
-      margin-bottom: 4px;
-    }
-
-    .tagline {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 8px;
+    .footer a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
   <div class="page">
-    <header>
-      <div>
-        <div class="brand">DeltaAIQ</div>
-        <div class="pill">
-          AIQ Benchmark Engine
+    <header class="header">
+      <div class="brand">
+        <div class="brand-logo">ΔQ</div>
+        <div>
+          <div class="brand-text-main">DeltaAIQ</div>
+          <div class="brand-text-sub">AI Company Benchmarking</div>
         </div>
       </div>
-      <div class="tagline">
-        Benchmark AI maturity vs industry, peers, and global leaders.
+      <div class="header-pill">
+        <span class="header-pill-dot"></span>
+        <span>Private beta • internal HR + strategy use</span>
       </div>
     </header>
 
-    <div class="layout">
-      <!-- LEFT: Input + narrative -->
-      <div class="card">
-        <h1>AI Quotient for your company</h1>
-        <div class="subtitle">
-          Enter a company and we will analyze its AI maturity, strengths, and gaps
-          based on public information and typical patterns for that industry.
+    <main class="layout">
+      <!-- Left: hero and value props -->
+      <section class="hero-card">
+        <div class="hero-badge-row">
+          <div class="hero-pill hero-pill-highlight">
+            <span class="hero-pill-chip"></span>
+            <span>For HR, strategy, and founders</span>
+          </div>
+          <div class="hero-pill">Built by Felix Human Capital</div>
         </div>
 
-        <form id="aiq-form">
-          <div>
-            <label for="company">Company name</label>
-            <input id="company" name="company" placeholder="e.g. Lufthansa, TCS, Apple" required />
-          </div>
+        <h1 class="hero-title">
+          AI that
+          <span class="hero-highlight">finds “look-alike” companies</span>
+          in seconds.
+        </h1>
 
-          <div>
-            <label for="industry">Industry</label>
-            <input id="industry" name="industry" placeholder="e.g. Aviation, IT Services, Retail" />
-          </div>
+        <p class="hero-subtitle">
+          DeltaAIQ helps you quickly discover companies similar to your
+          target – for <strong>talent benchmarking</strong>,
+          <strong>comp strategy</strong>, or
+          <strong>market mapping</strong>. Start with one name, and let AI
+          surface adjacencies you may not have on your list.
+        </p>
 
-          <div>
-            <label for="region">Primary region</label>
-            <input id="region" name="region" placeholder="e.g. India, Europe, US" />
-          </div>
-
-          <div>
-            <label for="size">Company size</label>
-            <select id="size" name="size">
-              <option value="">Select</option>
-              <option value="startup">Startup (0–500)</option>
-              <option value="mid">Mid-size (500–5,000)</option>
-              <option value="large">Large (5,000–50,000)</option>
-              <option value="enterprise">Enterprise (50,000+)</option>
-            </select>
-          </div>
-
-          <div class="full">
-            <button id="generate-btn" type="submit">
-              Generate AIQ Score
-            </button>
-            <div id="status" class="status">No analysis yet.</div>
-          </div>
-        </form>
-
-        <div id="summary-section" style="margin-top: 14px; display: none;">
-          <div class="section-title">Executive insight</div>
-          <div id="summary-text" class="subtitle" style="margin-bottom: 8px;"></div>
-          <div class="section-title">Top strengths</div>
-          <ul id="strengths-list" class="list"></ul>
-          <div class="section-title">Key gaps</div>
-          <ul id="gaps-list" class="list"></ul>
+        <div class="hero-meta">
+          <span><span class="hero-dot"></span> Early-stage internal product</span>
+          <span><span class="hero-dot"></span> Uses OpenAI models securely on server</span>
+          <span><span class="hero-dot"></span> No public data is stored from searches</span>
         </div>
+
+        <div class="hero-actions">
+          <button class="btn-primary" onclick="scrollToDemo()">
+            Try live demo
+          </button>
+          <button class="btn-secondary">
+            Use cases
+          </button>
+        </div>
+
+        <div class="hero-footnote">
+          Designed for HR leaders, founders, corporate development,
+          and anyone who needs a <strong>quick, directional view of
+          “who is like whom”</strong> before deeper research.
+        </div>
+
+        <div class="feature-row">
+          <div class="feature-card">
+            <div class="feature-card-title">Comp + talent benchmarking</div>
+            Use similar companies as a more realistic peer set for salary
+            bands, hiring profiles, and career-path design.
+          </div>
+          <div class="feature-card">
+            <div class="feature-card-title">Market mapping</div>
+            Explore adjacencies for GTM, partnerships, or expansion
+            by starting with a single anchor company.
+          </div>
+          <div class="feature-card">
+            <div class="feature-card-title">Quick pre-work</div>
+            Prepare for leadership meetings, vendor demos, or BD
+            conversations with a fast, AI-assisted short list.
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: demo card -->
+      <section id="demo-card" class="demo-card" aria-label="Live AI demo">
+        <div class="demo-header">
+          <div>
+            <div class="demo-title">Live AI demo</div>
+            <div class="demo-desc">
+              Type any company and DeltaAIQ will suggest similar names
+              it considers “neighbours” in the ecosystem.
+            </div>
+          </div>
+          <div class="demo-tag">Server-side OpenAI</div>
+        </div>
+
+        <div class="demo-input">
+          <div class="demo-label-row">
+            <label for="company-input" class="demo-label">Company name</label>
+            <span class="demo-hint">Try: Lufthansa, Apple, Infosys…</span>
+          </div>
+          <input
+            id="company-input"
+            type="text"
+            placeholder="Start typing a company you know well"
+            autocomplete="off"
+          />
+        </div>
+
+        <div id="demo-status" class="demo-status"></div>
+
+        <div id="demo-companies" class="demo-companies">
+          <div class="demo-empty">
+            Start typing to see similar companies appear here.
+          </div>
+        </div>
+
+        <div class="demo-footer-note">
+          This is not a final “data-clean” view; it is meant for early-stage
+          exploration and shortlisting, not official market intelligence.
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div>© <span id="year"></span> DeltaAIQ · Felix Human Capital</div>
+      <div>
+        <a href="mailto:sukeshnithakur@gmail.com">Contact</a>
       </div>
-
-      <!-- RIGHT: Score + chart + recommendations -->
-      <div class="card">
-        <div class="score-row">
-          <div>
-            <div class="score-label">AI Quotient</div>
-            <div id="score-main" class="score-main">–</div>
-          </div>
-          <div>
-            <div id="score-badge" class="badge medium">NO DATA</div>
-          </div>
-        </div>
-
-        <div class="bar-wrapper">
-          <div id="score-bar" class="bar-fill"></div>
-        </div>
-
-        <div class="benchmarks">
-          <div>Industry avg: <span id="bench-industry">–</span></div>
-          <div>Leaders: <span id="bench-leaders">–</span></div>
-        </div>
-
-        <canvas id="pillars-chart" style="margin-top: 18px; max-height: 230px;"></canvas>
-
-        <div class="section-title" style="margin-top: 14px;">Pillar breakdown</div>
-        <div id="pillars-container" class="pillars"></div>
-
-        <div class="section-title" style="margin-top: 12px;">90-day roadmap</div>
-        <ul id="roadmap-list" class="list"></ul>
-      </div>
-    </div>
+    </footer>
   </div>
 
   <script>
-    const form = document.getElementById("aiq-form");
-    const statusEl = document.getElementById("status");
-    const generateBtn = document.getElementById("generate-btn");
+    const inputEl = document.getElementById("company-input");
+    const statusEl = document.getElementById("demo-status");
+    const companiesEl = document.getElementById("demo-companies");
+    const yearEl = document.getElementById("year");
 
-    const scoreMain = document.getElementById("score-main");
-    const scoreBadge = document.getElementById("score-badge");
-    const scoreBar = document.getElementById("score-bar");
-    const benchIndustry = document.getElementById("bench-industry");
-    const benchLeaders = document.getElementById("bench-leaders");
-    const pillarsContainer = document.getElementById("pillars-container");
-    const roadmapList = document.getElementById("roadmap-list");
-    const summarySection = document.getElementById("summary-section");
-    const summaryText = document.getElementById("summary-text");
-    const strengthsList = document.getElementById("strengths-list");
-    const gapsList = document.getElementById("gaps-list");
+    yearEl.textContent = new Date().getFullYear();
 
-    let pillarsChart = null;
+    let debounceId = null;
 
-    function setBadge(score) {
-      let label = "EMERGING";
-      let cls = "low";
-
-      if (score >= 70) {
-        label = "AI LEADER";
-        cls = "good";
-      } else if (score >= 50) {
-        label = "SCALING";
-        cls = "medium";
-      }
-
-      scoreBadge.textContent = label;
-      scoreBadge.className = "badge " + cls;
+    function scrollToDemo() {
+      const demo = document.getElementById("demo-card");
+      if (!demo) return;
+      demo.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
-    function updateChart(pillars) {
-      const ctx = document.getElementById("pillars-chart").getContext("2d");
-      const labels = pillars.map(p => p.name);
-      const values = pillars.map(p => p.score);
-
-      if (pillarsChart) {
-        pillarsChart.data.labels = labels;
-        pillarsChart.data.datasets[0].data = values;
-        pillarsChart.update();
+    async function fetchCompanies(query) {
+      const trimmed = query.trim();
+      if (!trimmed) {
+        statusEl.textContent = "";
+        companiesEl.innerHTML =
+          '<div class="demo-empty">Start typing to see similar companies appear here.</div>';
         return;
       }
 
-      pillarsChart = new Chart(ctx, {
-        type: "radar",
-        data: {
-          labels,
-          datasets: [{
-            label: "AIQ Pillars",
-            data: values,
-            fill: true,
-            backgroundColor: "rgba(91, 141, 239, 0.25)",
-            borderColor: "rgba(91, 141, 239, 1)",
-            pointBackgroundColor: "rgba(91, 141, 239, 1)"
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            r: {
-              beginAtZero: true,
-              suggestedMax: 100,
-              grid: {
-                color: "rgba(255,255,255,0.08)"
-              },
-              ticks: {
-                display: false
-              },
-              angleLines: {
-                color: "rgba(255,255,255,0.08)"
-              }
-            }
-          },
-          plugins: {
-            legend: {
-              display: false
-            }
-          }
-        }
-      });
-    }
-
-    function renderPillars(pillars) {
-      pillarsContainer.innerHTML = "";
-      pillars.forEach(p => {
-        const div = document.createElement("div");
-        div.className = "pillar-item";
-        div.innerHTML = `
-          <div class="pillar-head">
-            <span>${p.name}</span>
-            <span class="pillar-score">${p.score}</span>
-          </div>
-          <div>${p.comment}</div>
-        `;
-        pillarsContainer.appendChild(div);
-      });
-    }
-
-    function renderList(listEl, items) {
-      listEl.innerHTML = "";
-      items.forEach(text => {
-        const li = document.createElement("li");
-        li.textContent = text;
-        listEl.appendChild(li);
-      });
-    }
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const company = document.getElementById("company").value.trim();
-      const industry = document.getElementById("industry").value.trim();
-      const region = document.getElementById("region").value.trim();
-      const size = document.getElementById("size").value;
-
-      if (!company) return;
-
-      statusEl.textContent = "Analyzing AI maturity…";
-      statusEl.classList.remove("error");
-      generateBtn.disabled = true;
+      statusEl.textContent = "Thinking about similar companies…";
 
       try {
-        const res = await fetch("/api/aiq", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ company, industry, region, size })
-        });
-
+        const res = await fetch(
+          `/api/companySearch?query=${encodeURIComponent(trimmed)}`
+        );
         const data = await res.json();
 
-        if (!res.ok || data.error) {
-          statusEl.textContent = "Error: " + (data.error || res.statusText);
-          statusEl.classList.add("error");
-          generateBtn.disabled = false;
+        if (data.error) {
+          statusEl.textContent = "";
+          companiesEl.innerHTML =
+            '<div class="demo-error">Error from AI: ' +
+            (data.error || "Unknown error") +
+            "</div>";
           return;
         }
 
-        const {
-          aiqScore,
-          industryAverage,
-          leadersAverage,
-          summary,
-          strengths,
-          gaps,
-          roadmap,
-          pillars
-        } = data;
+        const companies = Array.isArray(data.companies)
+          ? data.companies
+          : [];
 
-        scoreMain.textContent = Math.round(aiqScore);
-        scoreBar.style.width = Math.max(5, Math.min(100, aiqScore)) + "%";
-        setBadge(aiqScore);
+        statusEl.textContent =
+          companies.length > 0
+            ? "Use this as a starting shortlist, not a final answer."
+            : "";
 
-        benchIndustry.textContent = Math.round(industryAverage);
-        benchLeaders.textContent = Math.round(leadersAverage);
+        if (companies.length === 0) {
+          companiesEl.innerHTML =
+            '<div class="demo-empty">No strong matches yet. Try a more widely known company.</div>';
+          return;
+        }
 
-        updateChart(pillars);
-        renderPillars(pillars);
-        renderList(roadmapList, roadmap || []);
-
-        summaryText.textContent = summary || "";
-        renderList(strengthsList, strengths || []);
-        renderList(gapsList, gaps || []);
-        summarySection.style.display = "block";
-
-        statusEl.textContent = "Analysis complete.";
-        statusEl.classList.remove("error");
+        companiesEl.innerHTML = companies
+          .map(
+            (c, idx) =>
+              `<div class="demo-company">
+                <span class="demo-company-name">${c}</span>
+                <span class="demo-company-chip">${
+                  idx === 0 ? "Closest match" : "Similar"
+                }</span>
+              </div>`
+          )
+          .join("");
       } catch (err) {
         console.error(err);
-        statusEl.textContent = "Something went wrong while calling the AI engine.";
-        statusEl.classList.add("error");
-      } finally {
-        generateBtn.disabled = false;
+        statusEl.textContent = "";
+        companiesEl.innerHTML =
+          '<div class="demo-error">Something went wrong reaching the server. Please try again.</div>';
       }
+    }
+
+    inputEl.addEventListener("input", () => {
+      const value = inputEl.value;
+      if (debounceId) clearTimeout(debounceId);
+      debounceId = setTimeout(() => fetchCompanies(value), 450);
     });
   </script>
 </body>
