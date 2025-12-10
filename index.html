@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DeltaAIQ – AI Quotient Benchmark</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Chart.js via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #0f1020;
+      --card: #181a2e;
+      --accent: #5b8def;
+      --accent-soft: rgba(91, 141, 239, 0.15);
+      --text: #f5f5f7;
+      --muted: #a3a7c2;
+      --danger: #ff6b6b;
+      --success: #3dd68c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #202348, #050612);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 16px 48px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .brand {
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      font-size: 14px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(91, 141, 239, 0.12);
+      color: var(--accent);
+      font-size: 12px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.2fr);
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 20px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    h1 {
+      font-size: 26px;
+      margin: 0 0 6px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 14px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 600px) {
+      form {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    input, select {
+      width: 100%;
+      border-radius: 9px;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      padding: 8px 9px;
+      background: rgba(6, 8, 24, 0.9);
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(91, 141, 239, 0.5);
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    button {
+      border-radius: 999px;
+      border: none;
+      padding: 9px 20px;
+      background: linear-gradient(135deg, #5b8def, #8e7bff);
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .status {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .score-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .score-main {
+      font-size: 40px;
+      font-weight: 700;
+    }
+
+    .score-label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .badge {
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .badge.good {
+      border-color: var(--success);
+      color: var(--success);
+      background: rgba(61, 214, 140, 0.08);
+    }
+
+    .badge.medium {
+      border-color: #f1c40f;
+      color: #f1c40f;
+      background: rgba(241, 196, 15, 0.08);
+    }
+
+    .badge.low {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: rgba(255, 107, 107, 0.08);
+    }
+
+    .bar-wrapper {
+      margin-top: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 999px;
+      height: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #5b8def, #8e7bff);
+      transition: width 0.6s ease-out;
+    }
+
+    .benchmarks {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .pillars {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .pillar-item {
+      background: rgba(6, 8, 24, 0.8);
+      border-radius: 13px;
+      padding: 8px 9px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 12px;
+    }
+
+    .pillar-head {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+
+    .pillar-score {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .list {
+      font-size: 13px;
+      color: var(--muted);
+      padding-left: 18px;
+      margin: 4px 0 10px;
+    }
+
+    .list li {
+      margin-bottom: 4px;
+    }
+
+    .tagline {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div>
+        <div class="brand">DeltaAIQ</div>
+        <div class="pill">
+          AIQ Benchmark Engine
+        </div>
+      </div>
+      <div class="tagline">
+        Benchmark AI maturity vs industry, peers, and global leaders.
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- LEFT: Input + narrative -->
+      <div class="card">
+        <h1>AI Quotient for your company</h1>
+        <div class="subtitle">
+          Enter a company and we will analyze its AI maturity, strengths, and gaps
+          based on public information and typical patterns for that industry.
+        </div>
+
+        <form id="aiq-form">
+          <div>
+            <label for="company">Company name</label>
+            <input id="company" name="company" placeholder="e.g. Lufthansa, TCS, Apple" required />
+          </div>
+
+          <div>
+            <label for="industry">Industry</label>
+            <input id="industry" name="industry" placeholder="e.g. Aviation, IT Services, Retail" />
+          </div>
+
+          <div>
+            <label for="region">Primary region</label>
+            <input id="region" name="region" placeholder="e.g. India, Europe, US" />
+          </div>
+
+          <div>
+            <label for="size">Company size</label>
+            <select id="size" name="size">
+              <option value="">Select</option>
+              <option value="startup">Startup (0–500)</option>
+              <option value="mid">Mid-size (500–5,000)</option>
+              <option value="large">Large (5,000–50,000)</option>
+              <option value="enterprise">Enterprise (50,000+)</option>
+            </select>
+          </div>
+
+          <div class="full">
+            <button id="generate-btn" type="submit">
+              Generate AIQ Score
+            </button>
+            <div id="status" class="status">No analysis yet.</div>
+          </div>
+        </form>
+
+        <div id="summary-section" style="margin-top: 14px; display: none;">
+          <div class="section-title">Executive insight</div>
+          <div id="summary-text" class="subtitle" style="margin-bottom: 8px;"></div>
+          <div class="section-title">Top strengths</div>
+          <ul id="strengths-list" class="list"></ul>
+          <div class="section-title">Key gaps</div>
+          <ul id="gaps-list" class="list"></ul>
+        </div>
+      </div>
+
+      <!-- RIGHT: Score + chart + recommendations -->
+      <div class="card">
+        <div class="score-row">
+          <div>
+            <div class="score-label">AI Quotient</div>
+            <div id="score-main" class="score-main">–</div>
+          </div>
+          <div>
+            <div id="score-badge" class="badge medium">NO DATA</div>
+          </div>
+        </div>
+
+        <div class="bar-wrapper">
+          <div id="score-bar" class="bar-fill"></div>
+        </div>
+
+        <div class="benchmarks">
+          <div>Industry avg: <span id="bench-industry">–</span></div>
+          <div>Leaders: <span id="bench-leaders">–</span></div>
+        </div>
+
+        <canvas id="pillars-chart" style="margin-top: 18px; max-height: 230px;"></canvas>
+
+        <div class="section-title" style="margin-top: 14px;">Pillar breakdown</div>
+        <div id="pillars-container" class="pillars"></div>
+
+        <div class="section-title" style="margin-top: 12px;">90-day roadmap</div>
+        <ul id="roadmap-list" class="list"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("aiq-form");
+    const statusEl = document.getElementById("status");
+    const generateBtn = document.getElementById("generate-btn");
+
+    const scoreMain = document.getElementById("score-main");
+    const scoreBadge = document.getElementById("score-badge");
+    const scoreBar = document.getElementById("score-bar");
+    const benchIndustry = document.getElementById("bench-industry");
+    const benchLeaders = document.getElementById("bench-leaders");
+    const pillarsContainer = document.getElementById("pillars-container");
+    const roadmapList = document.getElementById("roadmap-list");
+    const summarySection = document.getElementById("summary-section");
+    const summaryText = document.getElementById("summary-text");
+    const strengthsList = document.getElementById("strengths-list");
+    const gapsList = document.getElementById("gaps-list");
+
+    let pillarsChart = null;
+
+    function setBadge(score) {
+      let label = "EMERGING";
+      let cls = "low";
+
+      if (score >= 70) {
+        label = "AI LEADER";
+        cls = "good";
+      } else if (score >= 50) {
+        label = "SCALING";
+        cls = "medium";
+      }
+
+      scoreBadge.textContent = label;
+      scoreBadge.className = "badge " + cls;
+    }
+
+    function updateChart(pillars) {
+      const ctx = document.getElementById("pillars-chart").getContext("2d");
+      const labels = pillars.map(p => p.name);
+      const values = pillars.map(p => p.score);
+
+      if (pillarsChart) {
+        pillarsChart.data.labels = labels;
+        pillarsChart.data.datasets[0].data = values;
+        pillarsChart.update();
+        return;
+      }
+
+      pillarsChart = new Chart(ctx, {
+        type: "radar",
+        data: {
+          labels,
+          datasets: [{
+            label: "AIQ Pillars",
+            data: values,
+            fill: true,
+            backgroundColor: "rgba(91, 141, 239, 0.25)",
+            borderColor: "rgba(91, 141, 239, 1)",
+            pointBackgroundColor: "rgba(91, 141, 239, 1)"
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            r: {
+              beginAtZero: true,
+              suggestedMax: 100,
+              grid: {
+                color: "rgba(255,255,255,0.08)"
+              },
+              ticks: {
+                display: false
+              },
+              angleLines: {
+                color: "rgba(255,255,255,0.08)"
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+
+    function renderPillars(pillars) {
+      pillarsContainer.innerHTML = "";
+      pillars.forEach(p => {
+        const div = document.createElement("div");
+        div.className = "pillar-item";
+        div.innerHTML = `
+          <div class="pillar-head">
+            <span>${p.name}</span>
+            <span class="pillar-score">${p.score}</span>
+          </div>
+          <div>${p.comment}</div>
+        `;
+        pillarsContainer.appendChild(div);
+      });
+    }
+
+    function renderList(listEl, items) {
+      listEl.innerHTML = "";
+      items.forEach(text => {
+        const li = document.createElement("li");
+        li.textContent = text;
+        listEl.appendChild(li);
+      });
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const company = document.getElementById("company").value.trim();
+      const industry = document.getElementById("industry").value.trim();
+      const region = document.getElementById("region").value.trim();
+      const size = document.getElementById("size").value;
+
+      if (!company) return;
+
+      statusEl.textContent = "Analyzing AI maturity…";
+      statusEl.classList.remove("error");
+      generateBtn.disabled = true;
+
+      try {
+        const res = await fetch("/api/aiq", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ company, industry, region, size })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || data.error) {
+          statusEl.textContent = "Error: " + (data.error || res.statusText);
+          statusEl.classList.add("error");
+          generateBtn.disabled = false;
+          return;
+        }
+
+        const {
+          aiqScore,
+          industryAverage,
+          leadersAverage,
+          summary,
+          strengths,
+          gaps,
+          roadmap,
+          pillars
+        } = data;
+
+        scoreMain.textContent = Math.round(aiqScore);
+        scoreBar.style.width = Math.max(5, Math.min(100, aiqScore)) + "%";
+        setBadge(aiqScore);
+
+        benchIndustry.textContent = Math.round(industryAverage);
+        benchLeaders.textContent = Math.round(leadersAverage);
+
+        updateChart(pillars);
+        renderPillars(pillars);
+        renderList(roadmapList, roadmap || []);
+
+        summaryText.textContent = summary || "";
+        renderList(strengthsList, strengths || []);
+        renderList(gapsList, gaps || []);
+        summarySection.style.display = "block";
+
+        statusEl.textContent = "Analysis complete.";
+        statusEl.classList.remove("error");
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "Something went wrong while calling the AI engine.";
+        statusEl.classList.add("error");
+      } finally {
+        generateBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
